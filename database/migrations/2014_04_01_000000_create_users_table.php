@@ -17,9 +17,11 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
+            //$table->string('password');
+            //$table->rememberToken();
+            //$table->timestamps();
+            $table->char('territory', 10);
+            //$table->foreign('territory')->references('ter_id')->on('t_koatuu_tree');
         });
     }
 
