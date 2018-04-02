@@ -7,10 +7,10 @@ https://github.com/adminko/testphp
 
 ## Установка
 1. `git clone https://github.com/NewEXE/UsersTerritories.git`
-2. Настроить .env file:
+2. `composer update --lock`
+3. Настроить .env file:
 	- `cp .env.example .env`
 	- `php artisan key:generate`
-3. `composer update --lock`
 4. `php artisan migrate`
 5. Импортировать MySQL дамп `protest14.sql`
 
