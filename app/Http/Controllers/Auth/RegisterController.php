@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\Territory;
 use App\Models\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
@@ -22,7 +23,11 @@ class RegisterController extends Controller
     |
     */
 
-    use RegistersUsers { register as traitRegister; }
+    use RegistersUsers
+    {
+        register as traitRegister;
+        showRegistrationForm as traitShowRegistrationForm;
+    }
 
     /**
      * Where to redirect users after registration.
@@ -38,7 +43,7 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+
     }
 
     /**
@@ -50,9 +55,9 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            //'password' => 'required|string|min:6|confirmed',
+            'name' => 'required|string|min:6|max:255',
+            'email' => 'required|string|email|max:255',
+            'territory' => 'required|exists:t_koatuu_tree,ter_id',
         ]);
     }
 
@@ -68,12 +73,46 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'territory' => $data['territory'],
-            //'password' => Hash::make($data['password']),
         ]);
     }
 
+    /**
+     * @param $email
+     * @return mixed
+     */
+    protected function emailExists($email)
+    {
+        return User::where('email', $email)->first();
+    }
+
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function showRegistrationForm()
+    {
+        $regions = Territory::regions()->get();
+
+        return view('auth.register', compact('regions'));
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function register(Request $request)
     {
-        return $this->traitRegister($request);
+        $email = $request->email;
+
+        if ($user = $this->emailExists($email))
+        {
+            return redirect()->route('users', ['email' => $email])->with(['status' => __('register.already_registered')]);
+        }
+
+        $this->validator($request->all())->validate();
+
+        event(new Registered($user = $this->create($request->all())));
+
+        return $this->registered($request, $user)
+            ?: redirect()->route('users', ['email' => $email])->with(['status' => __('register.new_user')]);
     }
 }

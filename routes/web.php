@@ -11,9 +11,10 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-Auth::routes();
+Route::get('/', 'Auth\RegisterController@showRegistrationForm')->name('register');
+Route::post('/', 'Auth\RegisterController@register');
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::any('users/{email?}', 'UserController@index')->name('users');
+
+Route::post('ajax-districts', 'Ajax\TerritorySelectorController@returnDistricts')->name('ajax.territory.districts');
+Route::post('ajax-cities', 'Ajax\TerritorySelectorController@returnCities')->name('ajax.territory.cities');

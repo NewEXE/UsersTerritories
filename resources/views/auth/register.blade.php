@@ -5,80 +5,82 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Register') }}</div>
+                <div class="card-header">{{ __('register.register') }}</div>
 
                 <div class="card-body">
+
+                    @if ($errors->count())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
 
                         <div class="form-group row">
-                            <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
+                            <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('register.name') }}</label>
 
                             <div class="col-md-6">
                                 <input id="name" type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" name="name" value="{{ old('name') }}" required autofocus>
-
-                                @if ($errors->has('name'))
-                                    <span class="invalid-feedback">
-                                        <strong>{{ $errors->first('name') }}</strong>
-                                    </span>
-                                @endif
                             </div>
                         </div>
 
                         <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
+                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('register.email') }}</label>
 
                             <div class="col-md-6">
                                 <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}" required>
-
-                                @if ($errors->has('email'))
-                                    <span class="invalid-feedback">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
                             </div>
                         </div>
 
-                        <div class="form-group row">
-                            <label for="territory" class="col-md-4 col-form-label text-md-right">{{ __('Territory') }}</label>
+
+                        <div class="form-group row" id="_regions">
+                            <label class="col-md-4 col-form-label text-md-right">{{ __('register.region') }}</label>
 
                             <div class="col-md-6">
-                                <input id="territory" type="text" class="form-control{{ $errors->has('territory') ? ' is-invalid' : '' }}" name="territory" value="{{ old('territory') ?: '0100000000' }}" required>
 
-                                @if ($errors->has('territory'))
-                                    <span class="invalid-feedback">
-                                        <strong>{{ $errors->first('territory') }}</strong>
-                                    </span>
-                                @endif
+                                <select data-placeholder="{{ __('register.choose') }}..." class="chosen-select-region">
+                                    <option></option>
+                                    @foreach($regions as $region)
+                                        <option value="{{ $region->getKey() }}">{{ $region->ter_name }}</option>
+                                    @endforeach
+                                </select>
+
                             </div>
                         </div>
 
-                        {{--<div class="form-group row">--}}
-                            {{--<label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>--}}
+                        <div class="form-group row" id="_districts" style="display: none">
+                            <label for="_districts" class="col-md-4 col-form-label text-md-right">{{ __('register.district') }}</label>
 
-                            {{--<div class="col-md-6">--}}
-                                {{--<input id="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" required>--}}
+                            <div class="col-md-6">
 
-                                {{--@if ($errors->has('password'))--}}
-                                    {{--<span class="invalid-feedback">--}}
-                                        {{--<strong>{{ $errors->first('password') }}</strong>--}}
-                                    {{--</span>--}}
-                                {{--@endif--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
+                                <select data-placeholder="{{ __('register.choose') }}..." data-url="{{ route('ajax.territory.districts') }}" class="chosen-select-district">
+                                    <option></option>
+                                </select>
+                            </div>
+                        </div>
 
-                        {{--<div class="form-group row">--}}
-                            {{--<label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>--}}
+                        <div class="form-group row" id="_cities" style="display: none">
+                            <label for="_cities" class="col-md-4 col-form-label text-md-right">{{ __('register.city') }}</label>
 
-                            {{--<div class="col-md-6">--}}
-                                {{--<input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
+                            <div class="col-md-6">
+
+                                <select name="territory" data-placeholder="{{ __('register.choose') }}..." data-url="{{ route('ajax.territory.cities') }}" class="chosen-select-city">
+                                    <option></option>
+                                </select>
+
+                            </div>
+                        </div>
 
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
-                                    {{ __('Register') }}
+                                    {{ __('register.register') }}
                                 </button>
                             </div>
                         </div>

@@ -39,10 +39,35 @@ class Territory extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @param $query
+     * @return mixed
      */
-    public function parent()
+    public function scopeRegions($query)
     {
-        return $this->belongsTo(self::class, 'ter_pid');
+        return $query->where('ter_level', '1');
+    }
+
+    /**
+     * @param $query
+     * @param Territory $territory
+     * @return mixed
+     */
+    public function scopeDistricts($query, Territory $territory)
+    {
+        return $query
+            ->where('ter_pid', $territory->getKey())
+            ->where('ter_level', '2');
+    }
+
+    /**
+     * @param $query
+     * @param Territory $territory
+     * @return mixed
+     */
+    public function scopeCities($query, Territory $territory)
+    {
+        return $query
+            ->where('ter_pid', $territory->getKey())
+            ->where('ter_level', '>', '2');
     }
 }
