@@ -1,6 +1,6 @@
 # UsersTerritories
 Тестовое задание для ArtJoker #2
-(первое - https://github.com/NewEXE/UsersTerritories )
+(первое - https://github.com/NewEXE/StudentsExport )
 
 ## Задание
 https://github.com/adminko/testphp
